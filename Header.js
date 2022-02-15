@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import {auth} from './firebase';
 
 
 
@@ -8,10 +9,67 @@ function Header(props){
        
     }, [])
     
-    function abrirModalCriarConta(e){
-        e.preventDeFault();
+
+    //Criar conta firebase
+    function criarConta(e){
+
+      e.preventDefault();
+      let email = document.getElementById('email-cadastro').value;
+      let username = document.getElementById('username-cadastro').value;
+      let senha = document.getElementById('senha-cadastro').value;
+
+      auth.createUserWithEmailAndPassword(email,senha)
+      .then((authUser)=>{
+        authUser.user.updateProfile({
+          displayName: username
+        })
+
+        alert('Conta criada com sucesso!');
+        let modal = document.querySelector('.modalCriarConta');
+
+        modal.style.display = "none";
+
+      }).catch((error)=>{
+        alert(error.message);
+      })
+
     }
 
+    //login
+    function logar(e){
+        e.preventDefault();
+        let email = document.getElementById('email-login').value;
+        let senha = document.getElementById('senha-login').value;
+
+        auth.signInWithEmailAndPassword(email,senha)
+        .then((auth)=>{
+          props.setUser(auth.user.displayName);
+        }).catch((error)=>{
+          alert(error.message);
+        })
+
+    }
+    
+    //janela de criação de conta
+    function abrirModalCriarConta(e){
+        e.preventDefault();
+
+      let modal = document.querySelector('.modalCriarConta');
+
+      modal.style.display = "block";
+
+
+
+    }
+
+    function fecharModalCriar(){
+
+      let modal = document.querySelector('.modalCriarConta');
+
+      modal.style.display = "none";
+
+
+    }
 
     return(
 
@@ -19,12 +77,12 @@ function Header(props){
 
         <div className='modalCriarConta'>
             <div className='formCriarConta'>
-                <div className='close-modal-criar'>X</div>
+                <div onClick={()=>fecharModalCriar()} className='close-modal-criar'>X</div>
                 <h2>Criar Conta</h2>
-                <form>
-                    <input type="text" placeholder='Seu e-mail...'/>
-                    <input type="text" placeholder='Seu username...' />
-                    <input tyhpe="password" placeholder='Sua senha...'/>
+                <form onSubmit={(e)=>criarConta(e)}>
+                    <input id= "email-cadastro" type="text" placeholder='Seu e-mail...'/>
+                    <input id= "username-cadastro" type="text" placeholder='Seu username...' />
+                    <input id="senha-cadastro" type="password" placeholder='Sua senha...'/>
                     <input type = "submit" value="Criar conta"/>
                 </form>
             </div>
@@ -48,9 +106,9 @@ function Header(props){
               </div>
               :
               <div className="header_loginForm">
-                <form>
-                  <input type="text" placeholder ="Login..."/>
-                  <input type="password" placeholder ="Senha..."/>
+                <form onSubmit={(e)=>logar(e)}>
+                  <input id="email-login" type="text" placeholder ="Login..."/>
+                  <input id="senha-login" type="password" placeholder ="Senha..."/>
                   <input type="submit" name="acao" value = "Entrar"/>
                 </form>
                 <div className = "btn_criarConta">
