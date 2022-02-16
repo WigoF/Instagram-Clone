@@ -1,16 +1,21 @@
-import {useEffect, useState} from 'react';
-import {auth} from './firebase';
+import React, {useEffect, useState} from 'react';
+import firebase from 'firebase/compat/app';
+import {auth,storage,db} from './firebase';
 
 
-
+  
 function Header(props){
+
+    const [progress,setProgress] = useState(0);
+
+    const [file, setFile] = useState(null);
     
     useEffect(()=>{
        
     }, [])
     
 
-    //Criar conta firebase
+    //Criar conta
     function criarConta(e){
 
       e.preventDefault();
@@ -71,8 +76,64 @@ function Header(props){
 
     }
 
-    return(
+    //Upload
 
+    function abrirModalUpload(e){
+      e.preventDefault();
+
+      let modal = document.querySelector('.modalUpload');
+
+      modal.style.display = "block";
+
+    }
+
+    function fecharModalUpload(){
+
+      let modal = document.querySelector('.modalUpload');
+
+      modal.style.display = "none";
+
+
+    }
+
+    function uploadPost(e){
+        e.preventDefault(); 
+        let titulosPost = document.getElementById('legenda').value;
+        let progressEl = document.getElementById('progress-upload');
+        
+        const uploadTask = storage.ref(`images/${file.name}`).put(file);
+
+        uploadTask.on("state_changed", function(snapshot){
+          const progress = Math.round(snapshot.bytesTransferred/snapshot.totalBytes) * 100;
+          setProgress(progress);
+        }, function (error){
+
+        }, function (){
+
+          storage.ref("images").child(file.name).getDownloadURL()
+          .then(function(url){
+              db.collection('posts').add({
+                titulo:titulosPost,
+                image: url,
+                userName: props.user,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+
+              })
+
+              setProgress(0);
+              setFile(null);
+
+              alert('Upload realizado com sucesso!');
+
+              document.getElementById('form-upload').reset();
+          })
+
+        })
+       
+    }
+
+    return(
+      //formulario para criar conta
     <div className='header'>
 
         <div className='modalCriarConta'>
@@ -84,6 +145,22 @@ function Header(props){
                     <input id= "username-cadastro" type="text" placeholder='Seu username...' />
                     <input id="senha-cadastro" type="password" placeholder='Sua senha...'/>
                     <input type = "submit" value="Criar conta"/>
+                </form>
+            </div>
+        </div>
+
+
+     
+        
+      <div className='modalUpload'>
+            <div className='formUpload'>
+                <div onClick={()=>fecharModalUpload()} className='close-modal-post'>X</div>
+                <h2>Fazer Post</h2>
+                <form id='form-upload'onSubmit={(e)=>uploadPost(e)}>
+                    <progress id="progress-upload" value={progress}></progress>
+                    <input onChange={(e)=>setFile(e.target.files[0])} type = "file" name="file"/>
+                    <input id="legenda" type="text" placeholder='Escreva sua legenda...'/>
+                    <input type = "submit" value="Postar no instagram"/>
                 </form>
             </div>
 
@@ -100,8 +177,8 @@ function Header(props){
     
               <div class ="header_logadoInfo">
                 <span>Olá, <b>{props.user}</b></span>
-                
-                <a href='#'>Post</a>
+
+                <a onClick={(e)=>abrirModalUpload(e)} href='#'>Post</a>
                
               </div>
               :
