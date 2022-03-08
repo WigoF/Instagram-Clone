@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import firebase from 'firebase/compat/app';
 import {auth,storage,db} from './firebase';
 
@@ -11,7 +11,7 @@ function Header(props){
     const [file, setFile] = useState(null);
     
     useEffect(()=>{
-       
+      
     }, [])
     
 
@@ -168,14 +168,14 @@ function Header(props){
         </div>
 
 
-        <div class = "center">
+        <div className = "center">
             <div className="header_logo">
               <a href=''><img src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"/></a>
             </div>
             {
               (props.user)?
     
-              <div class ="header_logadoInfo">
+              <div className ="header_logadoInfo">
                 <span>Olá, <b>{props.user}</b></span>
 
                 <a onClick={(e)=>abrirModalUpload(e)} href='#'>Post</a>

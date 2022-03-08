@@ -82,7 +82,7 @@ body{
   cursor:pointer;
 }
 
-//estilo criar conta
+estilo criar conta
 
 .modalCriarConta{
   display: none;
@@ -135,7 +135,7 @@ body{
   background-color:#0095f6 ;
 }
 
-//estilo janela post
+estilo janela post
 
 .modalUpload{
   display: none;
@@ -187,5 +187,41 @@ body{
   border-radius:15px;
   background-color:#0095f6 ;
 }
+
+.postSingle{
+  background-color: white;
+  max-width: 700px;
+  margin:10px auto;
+}
+
+.postSingle img{
+  width: 100%;
+}
+
+.postSingle p{
+  padding:10px
+}
+
+.postSingle form {
+  padding: 15px;
+}
+
+.postSingle textarea{
+  width: 100%;
+  height: 120px;
+  border:1px solid #ccc;
+  padding: 10px;
+}
+
+.postSingle input[type=submit]{
+  background-color: #0095f6;
+  cursor:pointer;
+  color:white;
+  border:0;
+  padding: 8px;
+
+}
+
+
 
 
