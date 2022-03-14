@@ -49,10 +49,20 @@ function Header(props){
         auth.signInWithEmailAndPassword(email,senha)
         .then((auth)=>{
           props.setUser(auth.user.displayName);
+          window.location.href ="/";
         }).catch((error)=>{
           alert(error.message);
         })
 
+    }
+
+    //logout
+    function deslogar(e){
+      e.preventDefault();
+      auth.signOut().then(function(val){
+        props.setUser(null);
+        window.location.href ="/";
+      })
     }
     
     //janela de criação de conta
@@ -126,6 +136,7 @@ function Header(props){
               alert('Upload realizado com sucesso!');
 
               document.getElementById('form-upload').reset();
+              fecharModalUpload();
           })
 
         })
@@ -150,7 +161,7 @@ function Header(props){
         </div>
 
 
-     
+     // form upload
         
       <div className='modalUpload'>
             <div className='formUpload'>
@@ -179,6 +190,7 @@ function Header(props){
                 <span>Olá, <b>{props.user}</b></span>
 
                 <a onClick={(e)=>abrirModalUpload(e)} href='#'>Post</a>
+                <a onClick={(e)=>deslogar(e)}>Sair</a>
                
               </div>
               :
